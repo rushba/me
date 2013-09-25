@@ -1,0 +1,30 @@
+* el-get
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+  (unless (require 'el-get nil 'noerror)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+      (let (el-get-master-branch)
+        (goto-char (point-max))
+        (eval-print-last-sexp))))
+
+#+end_src
+* load helper
+#+begin_src emacs-lisp
+(defun me-load(file)
+(setq el-get-sources nil)
+(org-babel-load-file file)
+(el-get 'sync (mapcar 'el-get-source-name el-get-sources)))
+
+#+end_src
+* load settings
+** gui related
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-gui.org")
+#+end_src
+** prog tools
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-prog-tools.org")
+#+end_src

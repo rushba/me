@@ -1,0 +1,7 @@
+* magit
+#+begin_src emacs-lisp
+  (if (executable-find "git")
+      (progn
+        (add-to-list 'el-get-sources
+                     '(:name magit))))
+#+end_src

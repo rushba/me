@@ -1,0 +1,4 @@
+* Monaco font
+#+begin_src emacs-lisp
+(set-default-font "Monaco 10")
+#+end_src
