@@ -28,3 +28,7 @@
 #+begin_src emacs-lisp
 (me-load "~/.emacs.d/me-prog-tools.org")
 #+end_src
+** python related
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-py.org")
+#+end_src

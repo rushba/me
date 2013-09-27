@@ -1,0 +1,15 @@
+* Python settings
+** elpy
+#+begin_src emacs-lisp
+  (defun ome-python-setup ()
+    (elpy-enable)
+    (when (executable-find "ipython")
+      (elpy-use-ipython))
+    (define-key python-mode-map (kbd "RET")
+      'newline-and-indent))
+
+  (add-to-list 'el-get-sources
+               '(:name elpy
+                       :after (progn
+                                (ome-python-setup))))
+#+end_src
