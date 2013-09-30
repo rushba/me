@@ -13,3 +13,8 @@
                        :after (progn
                                 (ome-python-setup))))
 #+end_src
+** python-django
+#+begin_src emacs-lisp
+(add-to-list 'el-get-sources
+	'(:name python-django))
+#+end_src
