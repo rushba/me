@@ -1,0 +1,24 @@
+* Basic cc-mode settings
+#+begin_src emacs-lisp
+(setq c-default-style "linux")
+
+(defun me-c-initialization-hook ()
+  (define-key c-mode-base-map (kbd "RET") 'c-context-line-break))
+
+(add-hook 'c-initialization-hook 'me-c-initialization-hook)
+
+(defun me-c-mode-common-hook ()
+  (add-to-list 'c-cleanup-list 'defun-close-semi)
+  (c-toggle-hungry-state)
+  (c-toggle-auto-newline))
+
+;; this will affect all modes derived from cc-mode, like
+;; java-mode, php-mode, etc
+(add-hook 'c-mode-common-hook 'me-c-mode-common-hook)
+#+end_src
+* Cscope
+#+begin_src emacs-lisp
+(if (executable-find "cscope")
+   (add-to-list 'el-get-sources
+		'(:name xcscope)))
+#+end_src

@@ -32,3 +32,7 @@
 #+begin_src emacs-lisp
 (me-load "~/.emacs.d/me-py.org")
 #+end_src
+** c related
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-cc.org")
+#+end_src
