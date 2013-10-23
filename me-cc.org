@@ -16,9 +16,3 @@
 ;; java-mode, php-mode, etc
 (add-hook 'c-mode-common-hook 'me-c-mode-common-hook)
 #+end_src
-* Cscope
-#+begin_src emacs-lisp
-(if (executable-find "cscope")
-   (add-to-list 'el-get-sources
-		'(:name xcscope)))
-#+end_src
