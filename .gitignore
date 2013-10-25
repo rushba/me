@@ -38,3 +38,5 @@ url
 # oh-my-emacs doc
 doc
 /places
+/semanticdb
+/srecode-map.el
