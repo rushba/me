@@ -17,23 +17,272 @@
 (add-hook 'c-mode-common-hook 'me-c-mode-common-hook)
 #+end_src
 * CEDET
+config was stolen from [[http://stackoverflow.com/questions/17119422/which-function-mode-cannot-work-with-official-cedet-2-0]]
+#   (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+#   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+#   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+#   (add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode)
+#   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
+#   (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+
+#   ;; Activate semantic
+#   (semantic-mode 1)
+
+#   ;; Load contrib library
+#   (require 'eassist)
+
+# (when (not (member system-type '(gnu gnu/linux darwin cygwin)))
+#   (if (executable-find "gcc")
+#       (semantic-gcc-setup)
+#     (message "GCC is not installed and semantic analysis will be restriced.")))
+
+# (setq pulse-flag 'never)  ; No fade in/out effect
+# (setq semanticdb-default-save-directory
+#       (expand-file-name "~/.emacs.d/semanticdb"))
+# (setq eassist-header-switches
+#       '(("h" . ("cpp" "cxx" "c++" "CC" "cc" "C" "c" "mm" "m"))
+#         ("hh" . ("cc" "CC" "cpp" "cxx" "c++" "C"))
+#         ("hpp" . ("cpp" "cxx" "c++" "cc" "CC" "C"))
+#         ("hxx" . ("cxx" "cpp" "c++" "cc" "CC" "C"))
+#         ("h++" . ("c++" "cpp" "cxx" "cc" "CC" "C"))
+#         ("H" . ("C" "CC" "cc" "cpp" "cxx" "c++" "mm" "m"))
+#         ("HH" . ("CC" "cc" "C" "cpp" "cxx" "c++"))
+#         ("cpp" . ("hpp" "hxx" "h++" "HH" "hh" "H" "h"))
+#         ("cxx" . ("hxx" "hpp" "h++" "HH" "hh" "H" "h"))
+#         ("c++" . ("h++" "hpp" "hxx" "HH" "hh" "H" "h"))
+#         ("CC" . ("HH" "hh" "hpp" "hxx" "h++" "H" "h"))
+#         ("cc" . ("hh" "HH" "hpp" "hxx" "h++" "H" "h"))
+#         ("C" . ("hpp" "hxx" "h++" "HH" "hh" "H" "h"))
+#         ("c" . ("h"))
+#         ("m" . ("h"))
+#         ("mm" . ("h"))))
+
+
+# ;; Save the current jump point in order to jump back when using CEDET
+# ;; http://comments.gmane.org/gmane.emacs.cedet/5127
+# (defvar semantic-tags-location-ring (make-ring 512))
+
+# (defun semantic-goto-definition (point)
+#   "Goto definition using semantic-ia-fast-jump
+# save the pointer marker if tag is found"
+#   (interactive "d")
+#   (condition-case err
+#       (progn
+#         (ring-insert semantic-tags-location-ring (point-marker))
+#         (semantic-ia-fast-jump point))
+#     (error
+#      ;;if not found remove the tag saved in the ring
+#      (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+#      (signal (car err) (cdr err)))))
+
+# (defun semantic-pop-tag-mark ()
+#   "popup the tag save by semantic-goto-definition"
+#   (interactive)
+#   (if (ring-empty-p semantic-tags-location-ring)
+#       (message "%s" "No more tags available")
+#     (let* ((marker (ring-remove semantic-tags-location-ring 0))
+#            (buff (marker-buffer marker))
+#            (pos (marker-position marker)))
+#       (if (not buff)
+#           (message "Buffer has been deleted")
+#         (switch-to-buffer buff)
+#         (goto-char pos))
+#       (set-marker marker nil nil))))
+
+# (defun cedet-common-setup ()
+#   (local-set-key (kbd "C-c j") 'semantic-goto-definition)
+#   (local-set-key (kbd "C-c b") 'semantic-pop-tag-mark)
+#   (local-set-key (kbd "C-c o") 'semantic-ia-show-summary)
+#   (local-set-key (kbd "C-c d") 'semantic-ia-show-doc)
+#   (local-set-key (kbd "C-c p") 'semantic-analyze-proto-impl-toggle)
+
+#   (local-set-key (kbd "C-c f") 'semantic-symref)
+#   (local-set-key (kbd "C-c r") 'semantic-symref-symbol)
+
+#   (local-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
+#   (local-set-key (kbd "C-c <right>") 'semantic-tag-folding-show-block)
+
+#   ;; We use auto complete to get candidate
+#   (if window-system
+#       (local-set-key (kbd "M-n") 'semantic-ia-complete-symbol-menu))
+
+#   (local-set-key (kbd "C-c m") 'eassist-list-methods))
+
+# (defun cedet-c-c++-setup ()
+# ;;  (local-set-key "." 'semantic-complete-self-insert)
+# ;;  (local-set-key ">" 'semantic-complete-self-insert)
+# (local-set-key (kbd "C-c h") 'eassist-switch-h-cpp) ; Jump between .c and .h
+# (when (executable-find "cscope")
+#   (require 'cedet-cscope)
+#   (require 'semantic/db-cscope)
+#   (semanticdb-enable-cscope-databases)
+#   (local-set-key (kbd "C-c i") 'cedet-cscope-create/update-database)))
+
+# (defun cedet-java-setup ()
+#   (require 'cedet-java)
+#   (require 'semantic/db-javap))
 #+begin_src emacs-lisp
 (defun me-cedet-setup()
-  (setq cedet-root-path "~/.emacs.d/el-get/cedet/")
-  (add-to-list 'load-path (concat cedet-root-path "contrib"))
-  (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
-  (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-  (add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
-  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+  (setq cedet-root-path "~/.emacs.d/el-get/cedet")
+  (add-to-list 'load-path (concat cedet-root-path "/contrib"))
+  (add-to-list  'Info-directory-list (concat cedet-root-path "/doc/info"))
 
-  ;; Activate semantic
-  (semantic-mode 1)
 
-  ;; Load contrib library
-  (require 'eassist)
+(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+;(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
+
+;; Activate semantic
+(semantic-mode 1)
+
+(require 'semantic/bovine/c)
+(require 'semantic/bovine/clang)
+
+(require 'cedet-files)
+
+;; loading contrib...
+(require 'eassist)
+
+;; customisation of modes
+(defun alexott/cedet-hook ()
+  (local-set-key [(control return)] 'semantic-ia-complete-symbol-menu)
+  (local-set-key "\C-c?" 'semantic-ia-complete-symbol)
+  ;;
+  (local-set-key "\C-c>" 'semantic-comsemantic-ia-complete-symbolplete-analyze-inline)
+  (local-set-key "\C-c=" 'semantic-decoration-include-visit)
+
+  (local-set-key "\C-cj" 'semantic-ia-fast-jump)
+  (local-set-key "\C-cq" 'semantic-ia-show-doc)
+  (local-set-key "\C-cs" 'semantic-ia-show-summary)
+  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
+;;  (local-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
+;;  (local-set-key (kbd "C-c <right>") 'semantic-tag-folding-show-block)
+
+  (add-to-list 'ac-sources 'ac-source-semantic)
+  )
+;; (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
+(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+(add-hook 'lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'scheme-mode-hook 'alexott/cedet-hook)
+(add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'erlang-mode-hook 'alexott/cedet-hook)
+
+(defun alexott/c-mode-cedet-hook ()
+ ;; (local-set-key "." 'semantic-complete-self-insert)
+ ;; (local-set-key ">" 'semantic-complete-self-insert)
+  (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+  (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+  (local-set-key "\C-ce" 'eassist-list-methods)
+  (local-set-key "\C-c\C-r" 'semantic-symref)
+
+  (add-to-list 'ac-sources 'ac-source-gtags)
+  )
+(add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+
+(when (cedet-gnu-global-version-check t)
+  (semanticdb-enable-gnu-global-databases 'c-mode t)
+  (semanticdb-enable-gnu-global-databases 'c++-mode t))
+
+(when (cedet-ectag-version-check t)
+  (semantic-load-enable-primary-ectags-support))
+
+;; SRecode
+(global-srecode-minor-mode 1)
+
+;; EDE
+(global-ede-mode 1)
+(ede-enable-generic-projects)
+
+;; helper for boost setup...
+(defun c++-setup-boost (boost-root)
+  (when (file-accessible-directory-p boost-root)
+    (let ((cfiles (cedet-files-list-recursively boost-root "\\(config\\|user\\)\\.hpp")))
+      (dolist (file cfiles)
+        (add-to-list 'semantic-lex-c-preprocessor-symbol-file file)))))
+
+
+;; my functions for EDE
+(defun alexott/ede-get-local-var (fname var)
+  "fetch given variable var from :local-variables of project of file fname"
+  (let* ((current-dir (file-name-directory fname))
+         (prj (ede-current-project current-dir)))
+    (when prj
+      (let* ((ov (oref prj local-variables))
+            (lst (assoc var ov)))
+        (when lst
+          (cdr lst))))))
+
+;; setup compile package
+(require 'compile)
+(setq compilation-disable-input nil)
+(setq compilation-scroll-output t)
+(setq mode-compile-always-save-buffer-p t)
+
+(defun alexott/compile ()
+  "Saves all unsaved buffers, and runs 'compile'."
+  (interactive)
+  (save-some-buffers t)
+  (let* ((fname (or (buffer-file-name (current-buffer)) default-directory))
+         (current-dir (file-name-directory fname))
+         (prj (ede-current-project current-dir)))
+    (if prj
+        (project-compile-project prj)
+        (compile compile-command))))
+(global-set-key [f9] 'alexott/compile)
+
+;;
+(defun alexott/gen-std-compile-string ()
+  "Generates compile string for compiling CMake project in debug mode"
+  (let* ((current-dir (file-name-directory
+                       (or (buffer-file-name (current-buffer)) default-directory)))
+         (prj (ede-current-project current-dir))
+         (root-dir (ede-project-root-directory prj)))
+    (concat "cd " root-dir "; make -j2")))
+
+;;
+(defun alexott/gen-cmake-debug-compile-string ()
+  "Generates compile string for compiling CMake project in debug mode"
+  (let* ((current-dir (file-name-directory
+                       (or (buffer-file-name (current-buffer)) default-directory)))
+         (prj (ede-current-project current-dir))
+         (root-dir (ede-project-root-directory prj))
+         (subdir "")
+         )
+    (when (string-match root-dir current-dir)
+      (setf subdir (substring current-dir (match-end 0))))
+    (concat "cd " root-dir "Debug/" "; make -j3")))
+
+;;; Projects
+
+;; cpp-tests project definition
+(when (file-exists-p "~/projects/lang-exp/cpp/CMakeLists.txt")
+  (setq cpp-tests-project
+        (ede-cpp-root-project "cpp-tests"
+                              :file "~/projects/lang-exp/cpp/CMakeLists.txt"
+                              :system-include-path '("/home/ott/exp/include"
+                                                     boost-base-directory)
+                              :compile-command "cd Debug && make -j2"
+                              )))
+
+(when (file-exists-p "~/projects/squid-gsb/README")
+  (setq squid-gsb-project
+        (ede-cpp-root-project "squid-gsb"
+                              :file "~/projects/squid-gsb/README"
+                              :system-include-path '("/home/ott/exp/include"
+                                                     boost-base-directory)
+                              :compile-command "cd Debug && make -j2"
+                              )))
+
+;; Setup JAVA....
+(require 'semantic/db-javap)
+
 )
-
 (add-to-list 'el-get-sources '(:name cedet :after (progn (me-cedet-setup))))
 #+end_src
