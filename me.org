@@ -13,16 +13,27 @@
 #+end_src
 * load helper
 #+begin_src emacs-lisp
-(defun me-load(file)
-(setq el-get-sources nil)
-(org-babel-load-file file)
-(el-get 'sync (mapcar 'el-get-source-name el-get-sources)))
-
+  (defun me-load(file)
+    (setq el-get-sources nil)
+    (org-babel-load-file file)
+    (el-get 'sync (mapcar 'el-get-source-name el-get-sources)))
 #+end_src
 * load settings
 ** gui related
 #+begin_src emacs-lisp
 (me-load "~/.emacs.d/me-gui.org")
+#+end_src
+** key bindings
+#+begin_src emacs-lisp
+(global-set-key "\C-xc" 'compile)
+#+end_src
+** c related
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-cc.org")
+#+end_src
+** org-mode
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-org.org")
 #+end_src
 ** prog tools
 #+begin_src emacs-lisp
@@ -31,8 +42,4 @@
 ** python related
 #+begin_src emacs-lisp
 (me-load "~/.emacs.d/me-py.org")
-#+end_src
-** c related
-#+begin_src emacs-lisp
-(me-load "~/.emacs.d/me-cc.org")
 #+end_src
