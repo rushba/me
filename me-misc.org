@@ -1,0 +1,4 @@
+* delete trailing whitespaces
+#+begin_src emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src

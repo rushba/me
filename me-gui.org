@@ -22,7 +22,8 @@
 #+end_src
 * Monaco font
 #+begin_src emacs-lisp
-(set-default-font "Monaco 10")
+  ;(set-default-font "Monaco 10")
+  (set-default-font "Inconsolata LGC 10")
 #+end_src
 * Solarized Color Theme
 #+begin_src emacs-lisp

@@ -1,0 +1,38 @@
+* Code block fontification
+  :PROPERTIES:
+  :CUSTOM_ID: code-block-fontification
+  :END:
+The following displays the contents of code blocks in Org-mode files
+using the major-mode of the code.  It also changes the behavior of
+=TAB= to as if it were used in the appropriate major mode.  This means
+that reading and editing code form inside of your Org-mode files is
+much more like reading and editing of code using its major mode.
+
+#+NAME: code-block-fontification
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+#+end_src
+
+* HabitRPG autogenerate
+#+begin_src emacs-lisp
+  (defun me-habitrpg-setup()
+    (require 'habitrpg)
+    (add-hook 'org-after-todo-state-change-hook 'habitrpg-add 'append)
+    ;; For adding tasks from org mode
+    (global-set-key (kbd "C-c C-x h") 'habitrpg-add)
+    ;; Status buffer - use C-h m to see the keybindings
+    ;; C-c C-c - upvote task or buy reward
+    ;; C-c C-d - downvote task
+    ;; t - bring up manage menu, which adds or deletes tasks
+    ;(global-set-key (kbd "<f9> a") 'habitrpg-status)
+    ;; Continuously update a habit attache to a clocking task
+    (add-hook 'org-clock-in-hook 'habitrpg-clock-in)
+    (add-hook 'org-clock-out-hook 'habitrpg-clock-out)
+    ;; List of habits to check for when clocking a task
+    (add-to-list 'hrpg-tags-list "PROGRAMMING")
+    (add-to-list 'hrpg-tags-list "WORK")
+    (setq habitrpg-api-user "e8559813-a39a-458b-944f-8021cbf5b80a")
+    (setq habitrpg-api-token "184669b1-3337-4c31-975e-684613383454"))
+  (add-to-list 'el-get-sources '(:name habitrpg :after (progn (me-habitrpg-setup))))
+#+end_src

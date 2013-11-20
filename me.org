@@ -19,6 +19,10 @@
     (el-get 'sync (mapcar 'el-get-source-name el-get-sources)))
 #+end_src
 * load settings
+** misc
+#+begin_src emacs-lisp
+(me-load "~/.emacs.d/me-misc.org")
+#+end_src
 ** gui related
 #+begin_src emacs-lisp
 (me-load "~/.emacs.d/me-gui.org")
