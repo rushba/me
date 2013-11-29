@@ -5,3 +5,18 @@
         (add-to-list 'el-get-sources
                      '(:name magit))))
 #+end_src
+* lua
+#+begin_src emacs-lisp
+  (add-to-list 'el-get-sources
+               '(:name lua-mode))
+#+end_src
+* php
+#+begin_src emacs-lisp
+  (add-to-list 'el-get-sources
+               '(:name php-mode-improved))
+#+end_src
+* protobuf-mode
+#+begin_src emacs-lisp
+  (add-to-list 'el-get-sources
+               '(:name protobuf-mode))
+#+end_src
